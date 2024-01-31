@@ -22,7 +22,7 @@ jobs:
       #   with:
       #     context: .
       #     push: true
-      #     tags: yogi7760/try1:loop 
+      #     tags: yogi7760/try2:loop 
         
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -54,7 +54,7 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t try1:loop .
+          docker build -t try2:loop .
         env:
           DOCKER_CLI: docker
 
@@ -62,8 +62,8 @@ jobs:
         run: |
           # docker tag demo:latest public.ecr.aws/t7j7w2i0/docker_ecr:demo
           # docker push public.ecr.aws/t7j7w2i0/docker_ecr:demo
-          docker tag try1:loop 664334749222.dkr.ecr.us-east-2.amazonaws.com/try1:loop
-          docker push 664334749222.dkr.ecr.us-east-2.amazonaws.com/try1:loop
+          docker tag try2:loop 664334749222.dkr.ecr.us-east-2.amazonaws.com/try2:loop
+          docker push 664334749222.dkr.ecr.us-east-2.amazonaws.com/try2:loop
 
 
       # - name: Set up kubectl
