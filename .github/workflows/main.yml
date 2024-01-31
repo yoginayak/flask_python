@@ -1,0 +1,91 @@
+name: Publish Docker image
+
+on:
+  push:
+    branches: ['main']
+jobs:
+  push_to_registry:
+    name: push docker image
+    runs-on: self-hosted
+    steps:
+      - name: check out the repo
+        uses: actions/checkout@v3
+
+      - name: login to docker hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: yogi7760/try1:loop 
+        
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to ECR
+        id: ecr
+        uses: jwalton/gh-ecr-login@v2
+        with:
+          access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ secrets.AWS_REGION }}
+
+
+      # - name: Build Docker image and push it to ECR1
+      #   id: docker_build
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: .
+      #     file: ./Dockerfile
+      #     push: true
+      #     tags: pushimage1
+
+      # - name: Set up Docker
+      #   uses: docker/setup-buildx-action@v1
+
+      - name: Build Docker Image
+        run: |
+          docker build -t try1:loop .
+        env:
+          DOCKER_CLI: docker
+
+      - name: push to ecr
+        run: |
+          # docker tag demo:latest public.ecr.aws/t7j7w2i0/docker_ecr:demo
+          # docker push public.ecr.aws/t7j7w2i0/docker_ecr:demo
+          docker tag try1:latest 664334749222.dkr.ecr.us-east-2.amazonaws.com/try1:loop
+          docker push 664334749222.dkr.ecr.us-east-2.amazonaws.com/try1:loop
+
+
+      # - name: Set up kubectl
+      #   uses: azure/setup-kubectl@v1
+      #   with:
+      #     version: 'latest 1'
+      #     id: install 
+
+      # - name: Pull Docker Image from ECR
+      #   run: |
+      #     docker pull ${AWS_ACCOUNT_ID}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/docker_ecr:test
+
+      # - name: Configure kubectl for EKS
+      #   run: |
+      #     aws eks --region us-east-1 update-kubeconfig --name your-eks-cluster-name
+
+      
+      # - name: Tag Docker Image for EKS
+      #   run: |
+      #     docker tag ${AWS_ACCOUNT_ID}.dkr.ecr.us-east-1.amazonaws.com/your-repo-name:latest your-eks-cluster-name/your-repo-name:latest
+
+      # - name: Push Docker Image to EKS
+      #   run: |
+      #     kubectl apply -f path/to/kubernetes-deployment.yaml  # Replace with the path to your Kubernetes deployment file
+          
