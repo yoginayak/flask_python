@@ -62,7 +62,7 @@ jobs:
         run: |
           # docker tag demo:latest public.ecr.aws/t7j7w2i0/docker_ecr:demo
           # docker push public.ecr.aws/t7j7w2i0/docker_ecr:demo
-          docker tag try1:latest 664334749222.dkr.ecr.us-east-2.amazonaws.com/try1:loop
+          docker tag try1:loop 664334749222.dkr.ecr.us-east-2.amazonaws.com/try1:loop
           docker push 664334749222.dkr.ecr.us-east-2.amazonaws.com/try1:loop
 
 
